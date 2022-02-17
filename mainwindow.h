@@ -14,7 +14,7 @@ public:
     QLineEdit *headNode;
     QLineEdit *tailNode;
     QLineEdit *weight;
-    void randomGraph();
+    void reset();
     void addArc();
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

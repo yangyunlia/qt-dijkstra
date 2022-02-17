@@ -12,39 +12,28 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent) {
     QHBoxLayout *head = new QHBoxLayout();
     g = new graph();
     vlayout->addLayout(head, 1);
-    QPushButton *randGenerate = new QPushButton("生成图");
-    QPushButton *addArc = new QPushButton("添加边");
-    QPushButton *start = new QPushButton("开始运行");
-    vexNum = new QLineEdit();
-    headNode = new QLineEdit();
-    tailNode = new QLineEdit();
-    weight = new QLineEdit();
-    QLabel *l = new QLabel("输入节点数目");
-    head->addWidget(l);
-    head->addWidget(vexNum);
+    QPushButton *randGenerate = new QPushButton("刷新");
+    QPushButton *changeDir = new QPushButton("有向图/无向图");
+    QPushButton *start = new QPushButton("迪杰斯特拉算法");
+    QPushButton *floyd = new QPushButton("弗洛伊德算法");
     head->addWidget(randGenerate);
-    head->addWidget(new QLabel("节点1"));
-    head->addWidget(headNode);
-    head->addWidget(new QLabel("节点2"));
-    head->addWidget(tailNode);
-    head->addWidget(new QLabel("权重"));
-    head->addWidget(weight);
-    head->addWidget(addArc);
+    head->addWidget(changeDir);
     head->addWidget(start);
+    head->addWidget(floyd);
     vlayout->addWidget(g, 10);
     w->setLayout(vlayout);
-    QObject::connect(randGenerate, &QPushButton::clicked, this, &MainWindow::randomGraph);
-    QObject::connect(addArc, &QPushButton::clicked, this, &MainWindow::addArc);
-    QObject::connect(start, &QPushButton::clicked, g,&graph::start);
+    QObject::connect(randGenerate, &QPushButton::clicked, this, &MainWindow::reset);
+    QObject::connect(changeDir, &QPushButton::clicked, g, &graph::changeDir);
+    QObject::connect(start, &QPushButton::clicked, g,&graph::startDijkstra);
+    QObject::connect(floyd, &QPushButton::clicked, g,&graph::startFloyd);
 }
 
 MainWindow::~MainWindow(){
 
 }
 
-void MainWindow::randomGraph() {
-    int a = vexNum->text().toInt();
-    g->randomGraph(a);
+void MainWindow::reset(){
+    g->reset();
     g->repaint();
 }
 
