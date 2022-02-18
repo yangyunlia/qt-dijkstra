@@ -4,6 +4,7 @@
 #include<QLabel>
 #include<QMouseEvent>
 #include<QPushButton>
+#include<QEventLoop>
 #include "vexbutton.h"
 #include <math.h>
 graph::graph(QWidget *parent) : QWidget{parent} {
@@ -13,6 +14,19 @@ graph::graph(QWidget *parent) : QWidget{parent} {
     matrix = nullptr;
     isDir = 0;
     k = 0;
+    inputW = new QMainWindow();
+    inputW->setWindowTitle("权重");
+    QWidget *wCenter = new QWidget();
+    QVBoxLayout *b = new QVBoxLayout();
+    wCenter->setLayout(b);
+    inputW->setCentralWidget(wCenter);
+    inputLine  = new QLineEdit();
+    loop = new QEventLoop();
+    QPushButton *ok = new QPushButton("确认");
+    b->addWidget(inputLine);
+    b->addWidget(ok);
+    QObject::connect(ok, &QPushButton::clicked, inputW, &QMainWindow::close);
+    QObject::connect(ok, &QPushButton::clicked, loop, &QEventLoop::quit);
     t = new class thread(this);
     fpath = nullptr;
     d = nullptr;
@@ -83,12 +97,16 @@ void graph::addArc(int a, int b, int w){
     if(a < 0 || a >= vexNum || b < 0|| b >= vexNum) {
         return;
     }
+    inputW->show();
+    loop->exec();
+    w = inputLine->text().toInt();
     matrix[a][b] = w;
     if(isDir == 0) {
         matrix[b][a] = w;
     }
     this->repaint();
 }
+
 void graph::changeDir() {
     isDir = 1- isDir;
     this->repaint();

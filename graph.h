@@ -7,6 +7,9 @@
 #include <QTimer>
 #include <QThread>
 #include<QPushButton>
+#include<QMainWindow>
+#include<QLineEdit>
+#include<QEventLoop>
 class graph : public QWidget
 {
     Q_OBJECT
@@ -23,10 +26,13 @@ public:
     int k;
     int dijkstraOrFloyd;
     int isDir;
+    QLineEdit *inputLine;
     QGridLayout *layout;
     QWidget *w;
+    QEventLoop *loop;
     QList<QPushButton *> vlist;
     QList<int> pair;
+    QMainWindow *inputW;
     void startDijkstra();
     void startFloyd();
     explicit graph(QWidget *parent = nullptr);
