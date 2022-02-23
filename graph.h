@@ -43,6 +43,7 @@ public:
     void floyd();
     void paintEvent(QPaintEvent *event);
     void mouseDoubleClickEvent(QMouseEvent* event);
+    void deleteNode(int id);
 signals:
 
 };

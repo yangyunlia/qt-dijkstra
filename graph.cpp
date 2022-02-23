@@ -7,6 +7,7 @@
 #include<QEventLoop>
 #include "vexbutton.h"
 #include <math.h>
+#include "vexbutton.h"
 graph::graph(QWidget *parent) : QWidget{parent} {
     flag = nullptr;
     path = nullptr;
@@ -61,7 +62,7 @@ void graph::reset() {
 void graph::mouseDoubleClickEvent(QMouseEvent* e) {
    vexButton *b = new vexButton(vlist.size(), QString::number(vlist.size(), 10));
    b->setStyleSheet("border-radius:20px;background-color: blue");
-   b->setGeometry(e->position().x(), e->position().y(), 40, 40);
+   b->setGeometry(e->pos().x(), e->pos().y(), 40, 40);
    b->setParent(this);
    b->show();
    b->g = this;
@@ -91,6 +92,42 @@ void graph::mouseDoubleClickEvent(QMouseEvent* e) {
    }
    delete []matrix;
    matrix = newMatrix;
+   this->update();
+}
+
+void graph::deleteNode(int id) {
+    vexButton *b = (vexButton *)vlist[id];
+    b->setParent(nullptr);
+    b->deleteLater();
+    delete b;
+    vlist.removeAt(id);
+    for(int i = 0;i < vlist.size(); i++) {
+        ((vexButton *)vlist[i])->id = i;
+    }
+    vexNum--;
+    int **newMatrix = new int*[vexNum];
+    int m = 0, n = 0;
+    for(int i = 0; i < vexNum + 1; i++) {
+        if(i == id) {
+            continue;
+        }
+        newMatrix[m] = new int[vexNum];
+        n = 0;
+        for(int j = 0;j < vexNum + 1; j++) {
+           if(j == id) {
+               continue;
+           }
+            newMatrix[m][n] = matrix[i][j];
+            n++;
+        }
+        m++;
+    }
+    for(int i = 0; i < vexNum+1; i++) {
+        delete []matrix[i];
+    }
+    delete []matrix;
+    matrix = newMatrix;
+    this->update();
 }
 
 void graph::addArc(int a, int b, int w){
@@ -104,12 +141,12 @@ void graph::addArc(int a, int b, int w){
     if(isDir == 0) {
         matrix[b][a] = w;
     }
-    this->repaint();
+    this->update();
 }
 
 void graph::changeDir() {
     isDir = 1- isDir;
-    this->repaint();
+    this->update();
 }
 
 void graph::paintEvent(QPaintEvent *event) {
@@ -209,7 +246,7 @@ void graph::dijkstra() {
             path[i] = minId;
         }
     }
-    this->repaint();
+    this->update();
 }
 
 void graph::floyd() {
@@ -244,7 +281,7 @@ void graph::floyd() {
         }
     }
     k++;
-    this->repaint();
+    this->update();
 }
 
 void graph::startDijkstra() {
